@@ -1,12 +1,3 @@
-# bark
-
-A minimal-dependency library for business logic and state management in Flutter.
-
-Very much pre-alpha. Use at your own risk!
-
-## Example: Counter
-
-```dart
 import 'package:flutter/material.dart';
 import 'package:bark/bark.dart';
 
@@ -68,8 +59,3 @@ class CounterComponent extends SimpleViewComponent<Null, CounterView> {
   @override
   Bloc<CounterView> createBloc(BuildContext context) => CounterBloc();
 }
-
-void main() {
-  runApp(MaterialApp(home: Scaffold(body: Center(child: CounterComponent()))));
-}
-```

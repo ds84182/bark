@@ -8,6 +8,7 @@ export 'src/bloc.dart'
         SourceContext,
         SourceContextExt,
         Bloc,
+        BlocContext,
         BlocMessage,
         NullOnFailure,
         AsyncNullOnFailure,
