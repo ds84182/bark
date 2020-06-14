@@ -96,16 +96,19 @@ abstract class NotLoaded<E> extends AsyncState<Null, E> {
 }
 
 class LoadingState extends NotLoaded<Null> {
-  const LoadingState();
+  const LoadingState._();
 
   @override
   Opt<Result<Null, Null>> get asResult => None;
 
   @override
   Null get loadedOrNull => null;
+
+  @override
+  String toString() => 'Loading';
 }
 
-const Loading = LoadingState();
+const Loading = LoadingState._();
 
 class Loaded<T> extends AsyncState<T, Null> {
   final T data;
@@ -117,6 +120,15 @@ class Loaded<T> extends AsyncState<T, Null> {
 
   @override
   T get loadedOrNull => data;
+
+  @override
+  String toString() => 'Loaded($data)';
+
+  @override
+  bool operator ==(other) => other is Loaded && other.data == data;
+
+  @override
+  int get hashCode => data.hashCode;
 }
 
 class Failed<E> extends NotLoaded<E> {
@@ -129,4 +141,13 @@ class Failed<E> extends NotLoaded<E> {
 
   @override
   Null get loadedOrNull => null;
+
+  @override
+  String toString() => 'Failed($error)';
+
+  @override
+  bool operator ==(other) => other is Failed && other.error == error;
+
+  @override
+  int get hashCode => error.hashCode;
 }
