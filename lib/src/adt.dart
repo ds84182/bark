@@ -3,7 +3,7 @@
 library bark.src.adt;
 
 abstract class Opt<T> {
-  const Opt();
+  const Opt._();
 
   T get orNull;
 
@@ -11,7 +11,7 @@ abstract class Opt<T> {
 }
 
 class NoneOpt extends Opt<Null> {
-  const NoneOpt();
+  const NoneOpt._() : super._();
 
   @override
   Null get orNull => null;
@@ -20,12 +20,12 @@ class NoneOpt extends Opt<Null> {
   String toString() => "None";
 }
 
-const None = NoneOpt();
+const None = NoneOpt._();
 
 class Some<T> extends Opt<T> {
   final T value;
 
-  const Some(this.value);
+  const Some(this.value) : super._();
 
   @override
   T get orNull => value;
@@ -41,7 +41,7 @@ class Some<T> extends Opt<T> {
 }
 
 abstract class Result<T, E> {
-  const Result();
+  const Result._();
 
   T get dataOrNull;
   E get errorOrNull;
@@ -50,7 +50,7 @@ abstract class Result<T, E> {
 class Ok<T> extends Result<T, Null> {
   final T data;
 
-  const Ok(this.data);
+  const Ok(this.data) : super._();
 
   T get dataOrNull => data;
   Null get errorOrNull => null;
@@ -68,7 +68,7 @@ class Ok<T> extends Result<T, Null> {
 class Err<E> extends Result<Null, E> {
   final E error;
 
-  const Err(this.error);
+  const Err(this.error) : super._();
 
   Null get dataOrNull => null;
   E get errorOrNull => error;
@@ -84,7 +84,7 @@ class Err<E> extends Result<Null, E> {
 }
 
 abstract class AsyncState<T, E> {
-  const AsyncState();
+  const AsyncState._();
 
   Opt<Result<T, E>> get asResult;
 
@@ -92,11 +92,11 @@ abstract class AsyncState<T, E> {
 }
 
 abstract class NotLoaded<E> extends AsyncState<Null, E> {
-  const NotLoaded();
+  const NotLoaded._() : super._();
 }
 
 class LoadingState extends NotLoaded<Null> {
-  const LoadingState._();
+  const LoadingState._() : super._();
 
   @override
   Opt<Result<Null, Null>> get asResult => None;
@@ -113,7 +113,7 @@ const Loading = LoadingState._();
 class Loaded<T> extends AsyncState<T, Null> {
   final T data;
 
-  const Loaded(this.data);
+  const Loaded(this.data) : super._();
 
   @override
   Opt<Result<T, Null>> get asResult => Some(Ok(data));
@@ -134,7 +134,7 @@ class Loaded<T> extends AsyncState<T, Null> {
 class Failed<E> extends NotLoaded<E> {
   final E error;
 
-  const Failed(this.error);
+  const Failed(this.error) : super._();
 
   @override
   Opt<Result<Null, E>> get asResult => Some(Err(error));
