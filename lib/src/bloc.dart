@@ -307,7 +307,9 @@ abstract class Source<T> extends ChangeNotifier
   T get value {
     if (_shouldUpdateValue) {
       _shouldUpdateValue = false;
-      return _value = produceValue(_context);
+      final value = _value = produceValue(_context);
+      _context.clearUntracked();
+      return value;
     }
     return _value;
   }
