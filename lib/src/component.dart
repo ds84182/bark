@@ -36,7 +36,7 @@ abstract class Component<P, T> extends StatefulWidget {
   /// This creates the actual UI from your business logic.
   Widget build(BuildContext context, T viewModel);
 
-  const Component({Key key}) : super(key: key);
+  const Component({Key? key}) : super(key: key);
 
   @override
   _ComponentState<P, T> createState() => _ComponentState();
@@ -50,23 +50,24 @@ abstract class SimpleViewComponent<P, T extends View> extends Component<P, T> {
   @override
   Widget build(BuildContext context, T viewModel) => viewModel;
 
-  const SimpleViewComponent({Key key}) : super(key: key);
+  const SimpleViewComponent({Key? key}) : super(key: key);
 }
 
 class _ComponentState<P, T> extends State<Component<P, T>>
     with SafeBuildContext
-    implements BlocState {
-  Bloc<T> bloc;
-  BlocContext blocContext;
-  bool shouldUpdateViewModel = true;
-  T viewModel;
+    implements ComponentGlue {
+  var blocInitialized = false;
+  late Bloc<T> bloc;
+  var shouldUpdateViewModel = true;
+  late T viewModel;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (bloc == null) {
+    if (!blocInitialized) {
       bloc = widget.createBloc(context);
+      blocInitialized = true;
       _subscribe();
     }
   }
@@ -94,13 +95,6 @@ class _ComponentState<P, T> extends State<Component<P, T>>
   }
 
   @override
-  void onTrackerUpdated(Tracker tracker) {
-    setState(() {
-      shouldUpdateViewModel = true;
-    });
-  }
-
-  @override
   T handleMessage<T>(BlocMessage<T> message) {
     if (mounted) {
       return message(this);
@@ -109,14 +103,21 @@ class _ComponentState<P, T> extends State<Component<P, T>>
     }
   }
 
+  static void _noOp() {}
+
+  void _markRebuild() {
+    setState(_noOp);
+  }
+
   void _subscribe() {
-    blocContext = BlocContext(this);
+    bloc.attachComponent(this);
+    bloc.addListener(_markRebuild);
     shouldUpdateViewModel = true;
   }
 
   void _unsubscribe() {
-    blocContext?.dispose();
-    blocContext = null;
+    bloc.removeListener(_markRebuild);
+    bloc.detachComponent(this);
   }
 
   @override
@@ -129,8 +130,7 @@ class _ComponentState<P, T> extends State<Component<P, T>>
   Widget build(BuildContext context) {
     if (shouldUpdateViewModel) {
       shouldUpdateViewModel = false;
-      viewModel = bloc.viewModel(blocContext);
-      blocContext.clearUntracked();
+      viewModel = bloc.value;
     }
     return widget.build(context, viewModel);
   }

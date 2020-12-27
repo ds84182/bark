@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'counter.dart';
 
 void main() {
-  CounterBloc bloc;
-  TestComponent<CounterView> component;
+  late CounterBloc bloc;
+  late TestComponent<CounterView> component;
 
   setUp(() {
     bloc = CounterBloc();

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:bark/bark.dart';
 
 class CounterBloc extends Bloc<CounterView> {
-  final _count = ValueNotifier<int>(0);
+  // ⭐ Easy value tracking:
+  late final StateMember<int> _count = state(0);
 
   @override
-  CounterView viewModel(BlocContext context) {
-    // ⭐ Easy value tracking:
-    final count = context.trackValue(_count, #count);
+  CounterView buildValue() {
+    final count = _count.value;
 
     return CounterView(
       count: '$count',
@@ -15,14 +15,14 @@ class CounterBloc extends Bloc<CounterView> {
         _count.value++;
         if (_count.value == 100) {
           // ⭐ Decoupled and testable access to BuildContext:
-          context.dispatch(const ShowCongratsScreen());
+          dispatch(const ShowCongratsScreen());
         }
       },
     );
   }
 }
 
-class ShowCongratsScreen extends BlocMessage<void> with NullOnFailure {
+class ShowCongratsScreen extends BlocMessage<void> with NoOpOnFailure {
   const ShowCongratsScreen();
 
   void call(SafeBuildContext context) {
@@ -36,9 +36,9 @@ class CounterView extends StatelessWidget with View {
   final VoidCallback onIncrement;
 
   const CounterView({
-    Key key,
-    @required this.count,
-    @required this.onIncrement,
+    Key? key,
+    required this.count,
+    required this.onIncrement,
   }) : super(key: key);
 
   @override

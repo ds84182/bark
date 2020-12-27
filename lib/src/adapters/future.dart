@@ -11,7 +11,7 @@ class FutureValueAdapter<T> extends ChangeNotifier
 
   T get value => _value;
 
-  _FutureSubscription _sub;
+  _FutureSubscription? _sub;
 
   FutureValueAdapter(this._value);
 
@@ -65,7 +65,7 @@ extension AsyncStateFutureValueAdapter<T, E>
 }
 
 class _FutureSubscription<T> {
-  FutureValueAdapter<T> _adapter;
+  FutureValueAdapter<T>? _adapter;
   final Future<T> _future;
 
   _FutureSubscription(this._future) {

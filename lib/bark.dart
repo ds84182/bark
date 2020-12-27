@@ -4,17 +4,14 @@ export 'src/adt.dart';
 
 export 'src/bloc.dart'
     show
-        Source,
-        SourceContext,
-        SourceContextExt,
         Bloc,
-        BlocContext,
         BlocMessage,
         NullOnFailure,
+        NoOpOnFailure,
         AsyncNullOnFailure,
         FalseOnFailure,
-        FunctionSource,
         SafeBuildContext,
+        Dispatch,
         ParameterResult,
         UpdatableParameters;
 
@@ -24,3 +21,5 @@ export 'src/adapters/future.dart'
     show AsyncStateFutureValueAdapter, FutureValueAdapter;
 
 export 'src/adapters/stream.dart' show StreamValueAdapter;
+
+export 'src/live_value.dart';

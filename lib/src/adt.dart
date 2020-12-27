@@ -5,12 +5,13 @@ library bark.src.adt;
 abstract class Opt<T> {
   const Opt._();
 
-  T get orNull;
+  T? get orNull;
 
-  Opt<U> map<U>(U Function(T) f) => this == None ? None : Some(f(orNull));
+  Opt<U> map<U>(U Function(T) f) =>
+      identical(this, None) ? None as Opt<U> : Some<U>(f(orNull!));
 }
 
-class NoneOpt extends Opt<Null> {
+class NoneOpt extends Opt<Never> {
   const NoneOpt._() : super._();
 
   @override
@@ -43,11 +44,11 @@ class Some<T> extends Opt<T> {
 abstract class Result<T, E> {
   const Result._();
 
-  T get dataOrNull;
-  E get errorOrNull;
+  T? get dataOrNull;
+  E? get errorOrNull;
 }
 
-class Ok<T> extends Result<T, Null> {
+class Ok<T> extends Result<T, Never> {
   final T data;
 
   const Ok(this.data) : super._();
@@ -65,7 +66,7 @@ class Ok<T> extends Result<T, Null> {
   String toString() => 'Ok($data)';
 }
 
-class Err<E> extends Result<Null, E> {
+class Err<E> extends Result<Never, E> {
   final E error;
 
   const Err(this.error) : super._();
@@ -88,18 +89,18 @@ abstract class AsyncState<T, E> {
 
   Opt<Result<T, E>> get asResult;
 
-  T get loadedOrNull;
+  T? get loadedOrNull;
 }
 
-abstract class NotLoaded<E> extends AsyncState<Null, E> {
+abstract class NotLoaded<E> extends AsyncState<Never, E> {
   const NotLoaded._() : super._();
 }
 
-class LoadingState extends NotLoaded<Null> {
+class LoadingState extends NotLoaded<Never> {
   const LoadingState._() : super._();
 
   @override
-  Opt<Result<Null, Null>> get asResult => None;
+  Opt<Result<Never, Never>> get asResult => None;
 
   @override
   Null get loadedOrNull => null;
@@ -110,13 +111,13 @@ class LoadingState extends NotLoaded<Null> {
 
 const Loading = LoadingState._();
 
-class Loaded<T> extends AsyncState<T, Null> {
+class Loaded<T> extends AsyncState<T, Never> {
   final T data;
 
   const Loaded(this.data) : super._();
 
   @override
-  Opt<Result<T, Null>> get asResult => Some(Ok(data));
+  Opt<Result<T, Never>> get asResult => Some(Ok(data));
 
   @override
   T get loadedOrNull => data;
@@ -137,7 +138,7 @@ class Failed<E> extends NotLoaded<E> {
   const Failed(this.error) : super._();
 
   @override
-  Opt<Result<Null, E>> get asResult => Some(Err(error));
+  Opt<Result<Never, E>> get asResult => Some(Err(error));
 
   @override
   Null get loadedOrNull => null;
