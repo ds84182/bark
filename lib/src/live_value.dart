@@ -141,6 +141,7 @@ class ValueListenableMember<T> extends LiveValueMember {
 
   ValueListenable<T>? get listenable => _listenable;
   set listenable(ValueListenable<T>? v) {
+    if (identical(v, _listenable)) return;
     if (attached) _listenable?.removeListener(markDirty);
     _listenable = v;
     if (attached) v?.addListener(markDirty);
