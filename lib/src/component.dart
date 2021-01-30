@@ -107,6 +107,7 @@ class _ComponentState<P, T> extends State<Component<P, T>>
   void reassemble() {
     super.reassemble();
     bloc.markDirtyForReassemble();
+    shouldUpdateViewModel = true;
   }
 
   static void _noOp() {}
